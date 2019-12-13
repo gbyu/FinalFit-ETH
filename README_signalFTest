@@ -1,0 +1,54 @@
+# Line by line instruction for signalFTest
+#
+# ssh lxplus6.cern.ch
+#
+export SCRAM_ARCH=slc6_amd64_gcc491
+ cmsrel CMSSW_7_4_7
+ cd CMSSW_7_4_7/src
+ cmsenv
+ git cms-init
+ git clone git@github.com:cms-analysis/HiggsAnalysis-CombinedLimit.git HiggsAnalysis/CombinedLimit
+ cd ${CMSSW_BASE}/src/HiggsAnalysis/CombinedLimit
+ git fetch origin
+ git checkout origin/74x-root6
+ git checkout -b mybranch
+ cd ${CMSSW_BASE}/src
+ git clone git@github.com:bendavid/GBRLikelihood.git HiggsAnalysis/GBRLikelihood
+ cd ${CMSSW_BASE}/src/HiggsAnalysis
+ cmsenv
+ scram b -j9
+
+#
+#install flashgg
+#
+ cd ${CMSSW_BASE}/src/
+ git clone -b signalFTest_v1 git@github.com:gbyu/FinalFit-ETH.git
+ cd ${CMSSW_BASE}/src/flashggFinalFit/
+
+ cd ${CMSSW_BASE}/src/flashggFinalFit/Background
+ make
+ cd ${CMSSW_BASE}/src/flashggFinalFit/Signal
+ make
+
+ cd Signal/test
+
+ ## check the input & output directory of the WS.
+ ## after modifying the default output directory or you can run with
+
+ python renameDatasets.py --out-dir=<your output directory>
+ cd <your output directory>
+
+ ## merge two bbH files into one for further process
+
+ hadd output_bbHToGG_M-125_4FS_amcatnlo.root output_bbHToGG_M-125_4FS_yb*root
+
+ ## make fake WS for flashggFinalFit
+
+ python shiftDatasets.py --inp-dir=<previous output> --out-dir=<new output dir>
+
+ ## run sinalFTest by commands below for example:
+ ## You may need to change the input & output file
+ ## This version works only up to the signalFTest by changing names of dataset.
+ ## More update will follow
+ 
+  ./bin/signalFTest -i /afs/cern.ch/work/g/gbyu/private/CMGTools/ws_signal/shift/output_GluGluToHHTo2B2G_node_SM_13TeV-madgraph_125.root -d dat/newConfig_2016.dat -p gghh -f DoubleHTag_0,DoubleHTag_1,DoubleHTag_2,DoubleHTag_3,DoubleHTag_4,DoubleHTag_5,DoubleHTag_6,DoubleHTag_7,DoubleHTag_8,DoubleHTag_9,DoubleHTag_10,DoubleHTag_11 -o output_2016
