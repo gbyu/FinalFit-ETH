@@ -6,24 +6,23 @@ import os
 
 
 parser = OptionParser(option_list=[
-        make_option("--inp-files",type='string',dest='inp_files',default='VBFHToGG_M-125_13TeV_powheg_pythia8,GluGluHToGG_M-125_13TeV_powheg_pythia8,bbHToGG_M-125_4FS_ybyt_13TeV_amcatnlo,bbHToGG_M-125_4FS_yb2_13TeV_amcatnlo,GluGluToHHTo2B2G_node_SM_13TeV-madgraph,ttHToGG_M125_13TeV_powheg_pythia8_v2,VHToGG_M125_13TeV_amcatnloFXFX_madspin_pythia8'),
-        make_option("--target-names",type='string',dest='target_names',default='vbf,ggh,bbh,bbh,gghh,tth,vh'),
-        make_option("--inp-dir",type='string',dest="inp_dir",default='/afs/cern.ch/work/g/gbyu/public/WS_2016/'),
-        make_option("--year",type='string',dest="year",default='2016'),
-        make_option("--out-dir",type='string',dest="out_dir",default='/afs/cern.ch/work/g/gbyu/private/CMGTools/ws_signal/'),
-        make_option("--cats",type='string',dest="cats",default='DoubleHTag_0,DoubleHTag_1,DoubleHTag_2,DoubleHTag_3,DoubleHTag_4,DoubleHTag_5,DoubleHTag_6,DoubleHTag_7,DoubleHTag_8,DoubleHTag_9,DoubleHTag_10,DoubleHTag_11'),
-        ])
+    make_option("--inp-files",type='string',dest='inp_files',default='vbf_M125_13TeV,ggh_M125_13TeV,bbh_M125_13TeV,gghh_M125_13TeV,tth_M125_13TeV,vh_M125_13TeV'),
+    make_option("--target-names",type='string',dest='target_names',default='vbf,ggh,bbh,gghh,tth,vh'),
+    make_option("--inp-dir",type='string',dest="inp_dir",default='/afs/cern.ch/work/g/gbyu/private/CMGTools/ws_made/'),
+    make_option("--year",type='string',dest="year",default='2016'),
+    make_option("--out-dir",type='string',dest="out_dir",default='/afs/cern.ch/work/g/gbyu/private/CMGTools/ws_made/rename/'),
+    make_option("--cats",type='string',dest="cats",default='DoubleHTag_0,DoubleHTag_1,DoubleHTag_2,DoubleHTag_3,DoubleHTag_4,DoubleHTag_5,DoubleHTag_6,DoubleHTag_7,DoubleHTag_8,DoubleHTag_9,DoubleHTag_10,DoubleHTag_11'),
+])
 
 (options, args) = parser.parse_args()
 cats = options.cats.split(',')
-input_files = options.inp_files.split(',')
+input_files = []
 input_names = []
 target_names = options.target_names.split(',')
 target_files = []
-for num,f in enumerate(input_files):
-    print 'number and file ', num, f
-    input_names.append(f.replace('-','_') +'_13TeV')
-    print 'input_names ',input_names
+for num,f in enumerate(target_names):
+    print 'number and target ', num, f
+
     ########################SM generated#################
     #if "2017" in options.year : target_names.append(f.replace('-','_') +'_generated_2017_13TeV')
     #else : target_names.append(f.replace('-','_') +'_generated_13TeV')
@@ -31,27 +30,28 @@ for num,f in enumerate(input_files):
     #target_files.append('output_' + f + '_generated' )
     #####################################################
 
-    if "2017" in options.year :
-        target_names[num]=replace(target_names[num],target_names[num]+'_2017_13TeV')
-    else :
-        target_names[num]=target_names[num]+'_13TeV'
+    #   target_names[num]=replace(target_names[num],target_names[num]+'_'+year)
 
+    print 'target ', f
+    
+    input_names.append(f+"_13TeV_125")
+    input_files.append( 'output_' + f+"_M125_13TeV_"+options.year)
+    target_files.append(input_files[num])
 
-    print 'target ', target_names[num]
-    input_files[num] = 'output_' + f
-    target_files.append('output_' + f )
-
+    print 'input_names ',input_names[num]
     print 'input file : ',input_files[num]
     print 'target file : ',target_files[num]
+
+    target_names[num]=target_names[num]+"_13TeV_125"
+    print "target_names[num] (rename) : ",target_names[num]
     
 masses = [0.]
 higgs_mass = 125.
 wsname = "tagsDumper/cms_hgg_13TeV"
 
-
 for num,f in enumerate(input_files):
     print 'doing file ',f
-    tfile = TFile(options.inp_dir + f+".root")
+    tfile = TFile(options.inp_dir + input_files[num]+".root")
     ws = tfile.Get(wsname)
     for mass in masses :
         value = mass + higgs_mass
@@ -71,13 +71,13 @@ for num,f in enumerate(input_files):
             dataset.Print()
             cat_datasets.append(dataset)
 
-        if "2017" in options.year : out = TFile(options.out_dir + target_files[num] +"_2017.root","RECREATE")
-        else : out = TFile(options.out_dir + target_files[num] +".root","RECREATE")
-        out.mkdir("tagsDumper")
-        out.cd("tagsDumper")
-        neww = RooWorkspace("cms_hgg_13TeV","cms_hgg_13TeV") ;
-        for dat in cat_datasets:
-            getattr(neww, 'import')(dat, RooCmdArg())
-        neww.Write()
-        out.Close()
+            out = TFile(options.out_dir + target_files[num] +".root","RECREATE")
+
+            out.mkdir("tagsDumper")
+            out.cd("tagsDumper")
+            neww = RooWorkspace("cms_hgg_13TeV","cms_hgg_13TeV") ;
+            for dat in cat_datasets:
+                getattr(neww, 'import')(dat, RooCmdArg())
+            neww.Write()
+            out.Close()
     
