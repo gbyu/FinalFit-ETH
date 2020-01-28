@@ -54,8 +54,8 @@ string systfilename_;
 string plotDir_;
 bool skipPlots_=false;
 //bool skipPlots_=true;
-int mhLow_=115;
-int mhHigh_=135;
+int mhLow_=120;
+int mhHigh_=130;
 //int mhLow_=125;
 //int mhHigh_=125;
 int nCats_;
@@ -130,50 +130,50 @@ bool beamSpotReweigh_ = false;
 bool useDCBplusGaus_ = false;
 
 void OptionParser(int argc, char *argv[]){
-	po::options_description desc1("Allowed options");
-	desc1.add_options()
-		("help,h",                                                                                			"Show help")
-		("infilename,i", po::value<string>(&filenameStr_),                                           			"Input file name")
-		("indir", po::value<string>(&dirnameStr_),                                           			"Input file dir name")
-		("outfilename,o", po::value<string>(&outfilename_)->default_value("CMS-HGG_sigfit.root"), 			"Output file name")
-		("merge,m", po::value<string>(&mergefilename_)->default_value(""),                               	        "Merge the output with the given workspace")
-		("datfilename,d", po::value<string>(&datfilename_)->default_value("dat/newConfig.dat"),      			"Configuration file")
-		("systfilename,s", po::value<string>(&systfilename_)->default_value("dat/photonCatSyst.dat"),		"Systematic model numbers")
-		("plotDir,p", po::value<string>(&plotDir_)->default_value("plots"),						"Put plots in this directory")
-		("skipPlots", 																																									"Do not make any plots")
-		("mhLow,L", po::value<int>(&mhLow_)->default_value(115),                                  			"Low mass point")
-		("mcBeamSpotWidth", po::value<float>(&mcBeamSpotWidth_)->default_value(5.14),                                  			"Default width of MC beamspot")
-		("dataBeamSpotWidth", po::value<float>(&dataBeamSpotWidth_)->default_value(3.50),                                  			"Default width of data beamspot")
-		("nThreads,t", po::value<int>(&ncpu_)->default_value(ncpu_),                               			"Number of threads to be used for the fits")
-		("mhHigh,H", po::value<int>(&mhHigh_)->default_value(135),                                			"High mass point")
-		("iterativeFitConstraint_,C", po::value<float>(&iterativeFitConstraint_)->default_value(0.1),            			"Constraint value for iterative fit (for SSF)(0.1 is +/- 10%)")
-		("useSSF", po::value<bool>(&useSSF_)->default_value(false),"Use a simulatenous fit of all mass points where the params of the functional form are functions of MH")
-		("constraintValueMass,M", po::value<int>(&constraintValueMass_)->default_value(125),                        "Constraint value mass")
-		("pdfWeights", po::value<int>(&pdfWeights_)->default_value(0),                        "If pdf systematics should be considered, say how many (default 0 = off)")
-		("skipSecondaryModels",                                                                   			"Turn off creation of all additional models")
-		("doQuadraticSigmaSum",  										        "Add sigma systematic terms in quadrature")
-		("procs", po::value<string>(&procStr_)->default_value("ggh,vbf,wh,zh,tth"),					"Processes (comma sep)")
-		("massList", po::value<string>(&massListStr_)->default_value("120,125,130"),					"Masses to process.")
-		("skipMasses", po::value<string>(&massesToSkip_)->default_value(""),					"Skip these mass points - used eg for the 7TeV where there's no mc at 145")
-		("runInitialFitsOnly",                                                                                      "Just fit gaussians - no interpolation, no systematics - useful for testing nGaussians")
-		("cloneFits", po::value<string>(&cloneFitFile_),															"Do not redo the fits but load the fit parameters from this workspace. Pass as fileName:wsName.")
-		("nonRecursive",                                                                             		"Do not recursively calculate gaussian fractions")
-		("verbose,v", po::value<int>(&verbose_)->default_value(0),                                			"Verbosity level: 0 (lowest) - 3 (highest)")
-		("isFlashgg",	po::value<bool>(&isFlashgg_)->default_value(true),														"Use flashgg format")
-		("binnedFit",	po::value<bool>(&binnedFit_)->default_value(true),														"Binned Signal fit")
-		("nBins",	po::value<int>(&nBins_)->default_value(80),														"If using binned signal for fit, how many bins in 100-180?")
-		("checkYields",	po::value<bool>(&checkYields_)->default_value(false),														"Use flashgg format (default false)")
-		("beamSpotReweigh",	po::value<bool>(&beamSpotReweigh_)->default_value(false),														"Reweight events to  discrepancy in width of beamspot between data and MC")
-		("useDCBplusGaus",	po::value<bool>(&useDCBplusGaus_)->default_value(false),														"Use Double Crystal Ball plus 1 Gaussian to do fits instead of a sum of Gaussians")
-      ("split", po::value<string>(&splitStr_)->default_value(""), "do just one tag,proc ")
-		("changeIntLumi",	po::value<float>(&newIntLumi_)->default_value(0),														"If you want to specify an intLumi other than the one in the file. The event weights and rooRealVar IntLumi are both changed accordingly. (Specify new intlumi in fb^{-1})")
+  po::options_description desc1("Allowed options");
+  desc1.add_options()
+    ("help,h",                                                                                			"Show help")
+    ("infilename,i", po::value<string>(&filenameStr_),                                           			"Input file name")
+    ("indir", po::value<string>(&dirnameStr_),                                           			"Input file dir name")
+    ("outfilename,o", po::value<string>(&outfilename_)->default_value("CMS-HGG_sigfit.root"), 			"Output file name")
+    ("merge,m", po::value<string>(&mergefilename_)->default_value(""),                               	        "Merge the output with the given workspace")
+    ("datfilename,d", po::value<string>(&datfilename_)->default_value("dat/newConfig.dat"),      			"Configuration file")
+    ("systfilename,s", po::value<string>(&systfilename_)->default_value("dat/photonCatSyst.dat"),		"Systematic model numbers")
+    ("plotDir,p", po::value<string>(&plotDir_)->default_value("plots"),						"Put plots in this directory")
+    ("skipPlots", 																																									"Do not make any plots")
+    ("mhLow,L", po::value<int>(&mhLow_)->default_value(115),                                  			"Low mass point")
+    ("mcBeamSpotWidth", po::value<float>(&mcBeamSpotWidth_)->default_value(5.14),                                  			"Default width of MC beamspot")
+    ("dataBeamSpotWidth", po::value<float>(&dataBeamSpotWidth_)->default_value(3.50),                                  			"Default width of data beamspot")
+    ("nThreads,t", po::value<int>(&ncpu_)->default_value(ncpu_),                               			"Number of threads to be used for the fits")
+    ("mhHigh,H", po::value<int>(&mhHigh_)->default_value(135),                                			"High mass point")
+    ("iterativeFitConstraint_,C", po::value<float>(&iterativeFitConstraint_)->default_value(0.1),            			"Constraint value for iterative fit (for SSF)(0.1 is +/- 10%)")
+    ("useSSF", po::value<bool>(&useSSF_)->default_value(false),"Use a simulatenous fit of all mass points where the params of the functional form are functions of MH")
+    ("constraintValueMass,M", po::value<int>(&constraintValueMass_)->default_value(125),                        "Constraint value mass")
+    ("pdfWeights", po::value<int>(&pdfWeights_)->default_value(0),                        "If pdf systematics should be considered, say how many (default 0 = off)")
+    ("skipSecondaryModels",                                                                   			"Turn off creation of all additional models")
+    ("doQuadraticSigmaSum",  										        "Add sigma systematic terms in quadrature")
+    ("procs", po::value<string>(&procStr_)->default_value("ggh,vbf,wh,zh,tth"),					"Processes (comma sep)")
+    ("massList", po::value<string>(&massListStr_)->default_value("120,125,130"),					"Masses to process.")
+    ("skipMasses", po::value<string>(&massesToSkip_)->default_value(""),					"Skip these mass points - used eg for the 7TeV where there's no mc at 145")
+    ("runInitialFitsOnly",                                                                                      "Just fit gaussians - no interpolation, no systematics - useful for testing nGaussians")
+    ("cloneFits", po::value<string>(&cloneFitFile_),															"Do not redo the fits but load the fit parameters from this workspace. Pass as fileName:wsName.")
+    ("nonRecursive",                                                                             		"Do not recursively calculate gaussian fractions")
+    ("verbose,v", po::value<int>(&verbose_)->default_value(0),                                			"Verbosity level: 0 (lowest) - 3 (highest)")
+    ("isFlashgg",	po::value<bool>(&isFlashgg_)->default_value(true),														"Use flashgg format")
+    ("binnedFit",	po::value<bool>(&binnedFit_)->default_value(true),														"Binned Signal fit")
+    ("nBins",	po::value<int>(&nBins_)->default_value(80),														"If using binned signal for fit, how many bins in 100-180?")
+    ("checkYields",	po::value<bool>(&checkYields_)->default_value(false),														"Use flashgg format (default false)")
+    ("beamSpotReweigh",	po::value<bool>(&beamSpotReweigh_)->default_value(false),														"Reweight events to  discrepancy in width of beamspot between data and MC")
+    ("useDCBplusGaus",	po::value<bool>(&useDCBplusGaus_)->default_value(false),														"Use Double Crystal Ball plus 1 Gaussian to do fits instead of a sum of Gaussians")
+    ("split", po::value<string>(&splitStr_)->default_value(""), "do just one tag,proc ")
+    ("changeIntLumi",	po::value<float>(&newIntLumi_)->default_value(0),														"If you want to specify an intLumi other than the one in the file. The event weights and rooRealVar IntLumi are both changed accordingly. (Specify new intlumi in fb^{-1})")
     ("refProc", po::value<		string>(&optReferenceProc_)->default_value(""),            			"reference proc for replacement")
     ("refTag", po::value<		string>(&optReferenceTag_)->default_value(""),            			"reference tag for replacement")
-//`		("flashggCats,f", po::value<string>(&flashggCatsStr_)->default_value("UntaggedTag_0,UntaggedTag_1,UntaggedTag_2,UntaggedTag_3,UntaggedTag_4,VBFTag_0,VBFTag_1,VBFTag_2,TTHHadronicTag,TTHLeptonicTag,VHHadronicTag,VHTightTag,VHLooseTag,VHEtTag"),       "Flashgg categories if used")
-		("flashggCats,f", po::value<string>(&flashggCatsStr_)->default_value("DoubleHTag_0,DoubleHTag_1,DoubleHTag_2,DoubleHTag_3,DoubleHTag_4,DoubleHTag_5,DoubleHTag_6,DoubleHTag_7,DoubleHTag_8,DoubleHTag_9,DoubleHTag_10,DoubleHTag_11"),       "Flashgg categories if used")
-		;                                                                                             		
-	po::options_description desc("Allowed options");
-	desc.add(desc1);
+    //`		("flashggCats,f", po::value<string>(&flashggCatsStr_)->default_value("UntaggedTag_0,UntaggedTag_1,UntaggedTag_2,UntaggedTag_3,UntaggedTag_4,VBFTag_0,VBFTag_1,VBFTag_2,TTHHadronicTag,TTHLeptonicTag,VHHadronicTag,VHTightTag,VHLooseTag,VHEtTag"),       "Flashgg categories if used")
+    ("flashggCats,f", po::value<string>(&flashggCatsStr_)->default_value("DoubleHTag_0,DoubleHTag_1,DoubleHTag_2,DoubleHTag_3,DoubleHTag_4,DoubleHTag_5,DoubleHTag_6,DoubleHTag_7,DoubleHTag_8,DoubleHTag_9,DoubleHTag_10,DoubleHTag_11"),       "Flashgg categories if used")
+    ;                                                                                             		
+  po::options_description desc("Allowed options");
+  desc.add(desc1);
 
 	po::variables_map vm;
 	po::store(po::parse_command_line(argc,argv,desc),vm);
@@ -223,31 +223,36 @@ void OptionParser(int argc, char *argv[]){
 		cout << endl;
 	}
 	
-  // split options which are fiven as lists
-  split(procs_,procStr_,boost::is_any_of(","));
+	// split options which are fiven as lists
+	split(procs_,procStr_,boost::is_any_of(","));
 	split(flashggCats_,flashggCatsStr_,boost::is_any_of(","));
 	split(filename_,filenameStr_,boost::is_any_of(","));
-  split(split_,splitStr_,boost::is_any_of(",")); // proc,cat
+	split(split_,splitStr_,boost::is_any_of(",")); // proc,cat
 	vector<string> massListVector_;
 	split(massListVector_,massListStr_,boost::is_any_of(","));
 
-   vector<string> dirfilename_;
-   string fullFilename_ = "";
+	cout << "dirname :  " << dirnameStr_ << ", filename : " << filenameStr_ << " && size " << filename_.size() << endl;
+	
+	vector<string> dirfilename_;
+	string fullFilename_ = "";
 	if( !(dirnameStr_.empty()) ){
-      for (int iname =0 ; iname < filename_.size() ; iname++){
-			for (int mass_num = 0; mass_num < massListVector_.size(); mass_num++) {
-        	//	dirfilename_.push_back(dirnameStr_+"/"+filename_[iname]+"_"+massListVector_[mass_num]+".root");
-        		dirfilename_.push_back(dirnameStr_+"/"+filename_[iname]+".root");
-			}
-	   }
-      for (int iname =0 ; iname < dirfilename_.size() ; iname++){
-        if (iname<(dirfilename_.size()-1)) fullFilename_=fullFilename_+dirfilename_[iname]+",";
-        if (iname==dirfilename_.size()-1) fullFilename_=fullFilename_+dirfilename_[iname];
-		}
-	   filenameStr_ = fullFilename_;
+	  for (int iname =0 ; iname < filename_.size() ; iname++){
+	    for (int mass_num = 0; mass_num < massListVector_.size(); mass_num++) {
+	      dirfilename_.push_back(dirnameStr_+"/"+filename_[iname]+"_"+massListVector_[mass_num]+".root");
+	      
+	      //	dirfilename_.push_back(dirnameStr_+"/"+filename_[iname]+".root");
+	    }
+	  }
+	  for (int iname =0 ; iname < dirfilename_.size() ; iname++){
+	    cout <<  dirfilename_[iname] << endl;
+	    if (iname<(dirfilename_.size()-1)) fullFilename_=fullFilename_+dirfilename_[iname]+",";
+	    if (iname==dirfilename_.size()-1) fullFilename_=fullFilename_+dirfilename_[iname];
+	  }
+	  filenameStr_ = fullFilename_;
 	}
 
-
+	cout << "dir file name = " << dirfilename_.size() << " && " << dirfilename_[0] << endl;
+	
 }
 
 // used to get index of the reference dataset in the list of requried guassians.
@@ -266,7 +271,7 @@ unsigned int getIndexOfReferenceDataset(string proc, string cat){
   
   if (iLine==-1 ) {
     std::cout << "[ERROR] could not find the index of the category " << proc << ", " << cat << "you wished to look up. Exit!" << std::endl;
-     exit(1);
+    exit(1);
   }
   return iLine;
 }
